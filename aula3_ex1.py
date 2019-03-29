@@ -3,6 +3,6 @@ def function(a):
     print(type(a))
     print("O argumento é: ")
     
-a = input('Argumento a ser analisado: ')
+a = eval(input('Argumento a ser analisado: '))
 
 function(a)
