@@ -13,30 +13,14 @@ joana.pensize(eval(input('Pensize: ')))  # Selecionar largura de Joana
 print("Choose Joana's speed: ")          
 joana.speed(input('Speed: '))            # Selecionar velocidade de Joana
 
-for i in range(5):                       # Loop que faz o quadrado
-    joana.forward(100)
-    joana.right(144)
 
-joana.penup()                            
-joana.backward(400)                      # Comandos para mover Joana 
-joana.pendown()
+for i in range(4):
+    for i in range(5):                       # Loop que faz o quadrado
+        joana.forward(100)
+        joana.right(144)
 
-for i in range(5):
-    joana.forward(100)
-    joana.right(144)
+    joana.penup()
+    joana.left(90)
+    joana.forward(200)                      # Comandos para mover Joana 
+    joana.pendown()
 
-joana.penup()
-joana.forward(200)
-joana.pendown()
-
-for i in range(5):
-    joana.forward(100)
-    joana.right(144)
-
-joana.penup()
-joana.forward(400)
-joana.pendown()
-
-for i in range(5):
-    joana.forward(100)
-    joana.right(144)    
