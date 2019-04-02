@@ -10,11 +10,20 @@ bob.color("black")                     # Selecionar cor
 bob.pensize(5)                         # Selecionar largura       
 bob.speed("normal")                    # Selecionar velocidade
 
+print("Choose the lenght : ")  
+lenght = eval(input('Lenght: '))
+print("Choose the number of angles : ")  
+n_poly = eval(input('Number of angles: '))
+angle = 360/int(n_poly) 
 
-def square(t):
+def square(t, l):
     for i in range(4):
-        t.forward(50)                # Fazer Bob desenhar um quadrado
+        t.forward(l)               
         t.left(90)
 
-
-square(bob)
+def polygon(t, l, a):
+    for i in range(int(n_poly)):
+        t.forward(l)                
+        t.left(a)
+        
+polygon(bob, lenght, angle)
