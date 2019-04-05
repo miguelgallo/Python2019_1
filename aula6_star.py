@@ -15,7 +15,7 @@ joana.speed(input('Speed: '))            # Selecionar velocidade de Joana
 
 
 for i in range(4):
-    for i in range(5):                       # Loop que faz o quadrado
+    for i in range(5):                       # Loop que faz a estrela
         joana.forward(100)
         joana.right(144)
 
