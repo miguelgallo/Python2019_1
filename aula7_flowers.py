@@ -14,8 +14,8 @@ def polygon(t, n, length):
  
 def arc(t, r, angle):
     """Desenha um arco com dado raio e ângulo"""
-    arc_length = 2 * math.pi * r * abs(angle) / 360
-    n = int(arc_length / 4) + 1
+    arc_length = 2 * math.pi * r * angle / 360
+    n = int(arc_length / 3) + 1
     step_length = arc_length / n
     step_angle = float(angle) / n
  
