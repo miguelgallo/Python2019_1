@@ -2,18 +2,18 @@ import turtle
 import math
 
 def polyline(t, n, length, angle):
-    """Draws n line segments."""
+    """Desenha n segmentos de linha"""
     for i in range(n):
         t.fd(length)
         t.lt(angle)
  
 def polygon(t, n, length):
-    """Draws a polygon with n sides."""
+    """Desenha um polígono com n lados"""
     angle = 360/n
     polyline(t, n, length, angle)
  
 def arc(t, r, angle):
-    """Draws an arc with the given radius and angle."""
+    """Desenha um arco com dado raio e ângulo"""
     arc_length = 2 * math.pi * r * abs(angle) / 360
     n = int(arc_length / 4) + 1
     step_length = arc_length / n
@@ -24,13 +24,13 @@ def arc(t, r, angle):
     t.rt(step_angle/2)
 
 def petal(t, r, angle):
-    """Draws a petal using two arcs."""
+    """Desenha uma pétala com dois arcos"""
     for i in range(2):
         arc(t, r, angle)
         t.lt(180-angle)
 
 def flower(t, n, r, angle, p):
-    """Draws a flower with n petals."""
+    """Desenha uma flor com n pétalas"""
     for i in range(n):
         petal(t, r, angle)
         t.lt(p/n)
