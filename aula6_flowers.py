@@ -29,11 +29,11 @@ def petal(t, r, angle):
         arc(t, r, angle)
         t.lt(180-angle)
 
-def flower(t, n, r, angle, p):
+def flower(t, n, r, angle):
     """Desenha uma flor com n pétalas"""
     for i in range(n):
         petal(t, r, angle)
-        t.lt(p/n)
+        t.lt(360.0/n)
 
 jn = turtle.Screen()                 # Configurar a janela e seus atributos
 jn.bgcolor("lightblue")              # Selecionar cor de fundo
@@ -45,6 +45,6 @@ bob.color("black")                   # Selecionar cor
 bob.pensize(5)                       # Selecionar largura       
 bob.speed("fastest")                 # Selecionar velocidade
 
-flower(bob, 20, 200, 20, 360)
+flower(bob, 20, 200, 20)
 
 jn.exitonclick()
