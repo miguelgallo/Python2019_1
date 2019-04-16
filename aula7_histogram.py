@@ -28,7 +28,8 @@ tess.fd(100)
 tess.lt(90)
 tess.pd()
 
-xs = [48,117,200,240,160,260,220]
+xs = [int(x) for x in input().split()]
+#xs = [48,117,200,240,160,260,220]
 
 for a in xs:
     draw_bar(tess, a)
