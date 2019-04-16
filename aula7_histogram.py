@@ -15,10 +15,11 @@ def draw_bar(t, height):
 
 wn = turtle.Screen()         # Set up the window and its attributes
 print("Choose the background color : ")  
-wn.bgcolor(input('Color: '))
+wn.bgcolor(input('Background Color: '))
 
 tess = turtle.Turtle()       # Create tess and set some attributes
-tess.color("blue", "red")
+print("Choose the turtle line and fill color : ")  
+tess.color(input('Line Color: '), input('Fill Color: '))
 tess.pensize(3)
 
 tess.pu()
@@ -29,7 +30,14 @@ tess.lt(90)
 tess.pd()
 
 xs = [int(x) for x in input().split()]
-#xs = [48,117,200,240,160,260,220]
+#xs = eval(input(' '))
+
+try:
+    xs = xs + [] #duck typing
+    print("O argumento é uma lista")
+
+except TypeError:
+    print("O argumento não é uma lista")
 
 for a in xs:
     draw_bar(tess, a)
