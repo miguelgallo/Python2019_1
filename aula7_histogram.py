@@ -1,5 +1,7 @@
 import turtle
 
+binning = eval(input('Coloque o bin desejado: '))
+
 def draw_bar(t, height):
     """ Get turtle t to draw one bar, of height. """
     t.begin_fill()           # Added this line
@@ -7,7 +9,7 @@ def draw_bar(t, height):
     t.forward(height)
     t.write("  "+ str(height))
     t.right(90)
-    t.forward(40)
+    t.forward(binning)
     t.right(90)
     t.forward(height)
     t.left(90)
