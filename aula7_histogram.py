@@ -31,7 +31,7 @@ tess.pd()
 
 binning = eval(input('Coloque o bin desejado: '))
 
-xs = [int(x) for x in input().split()]
+xs = [int(x) for x in input('Preencha com a lista desejada: ').split()]
 #xs = eval(input(' '))
 
 try:
