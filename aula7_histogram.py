@@ -1,7 +1,5 @@
 import turtle
 
-binning = eval(input('Coloque o bin desejado: '))
-
 def draw_bar(t, height):
     """ Get turtle t to draw one bar, of height. """
     t.begin_fill()           # Added this line
@@ -30,6 +28,8 @@ tess.rt(90)
 tess.fd(100)
 tess.lt(90)
 tess.pd()
+
+binning = eval(input('Coloque o bin desejado: '))
 
 xs = [int(x) for x in input().split()]
 #xs = eval(input(' '))
