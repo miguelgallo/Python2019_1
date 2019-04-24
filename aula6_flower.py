@@ -36,16 +36,15 @@ def flower(t, n, r, angle, p):
         t.lt(p/n)
 
 jn = turtle.Screen()                 # Configurar a janela e seus atributos
-jn.bgcolor("lightblue")              # Selecionar cor de fundo
+jn.bgcolor("white")              # Selecionar cor de fundo
 jn.title("Bob")                      # Definir título
 
 bob = turtle.Turtle()                # Criar Bob
-bob.shape("turtle")                  # Selecionar formato         
-bob.color("pink")                    # Selecionar cor
+bob.shape("turtle")                  # Selecionar formato                       
 bob.pensize(5)                       # Selecionar largura       
 bob.speed("fastest")                 # Selecionar velocidade
 
-flower(bob, 7, 100, 40, 360)
+#flower(bob, 7, 100, 40, 360)
 
 #Desenhando o talo
 bob.color("lightgreen")
@@ -65,5 +64,16 @@ bob.rt(270)
 bob.color("green")
 leaf(bob, 40, 80, 180)
 bob.ht()
+
+bob.color("lightgreen")
+bob.goto(0,0)
+
+bob.begin_fill()
+bob.color("lightblue")
+flower(bob, 10, 120, 50, 360)
+bob.end_fill()
+
+tc= turtle.Screen().getcanvas()
+tc.postscript(file="flores.ps")
 
 jn.exitonclick()
