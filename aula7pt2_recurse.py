@@ -4,4 +4,4 @@ def recurse(n, s):
     else:
         recurse(n-1, n+s)
 
-recurse(3, 0)
+recurse(3, 0) #Saída é 6
