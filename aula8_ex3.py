@@ -35,5 +35,7 @@ class Ponto:
         """ Calcula a inclinação entre dois pontos """
         return (self.y)/(self.x)
 
-print(Ponto(4, 10).inclinacao_origem())
+print(Ponto(4,10).inclinacao_origem())
+
+#Da errado quando o ponto x for 0, por conta da divisão na definição da função inclinação_origem().
         
