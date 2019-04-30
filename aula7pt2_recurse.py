@@ -9,4 +9,5 @@ def recurse(n, s):
 
 recurse(3, 0) #Saída é 6 (3+2+1=6)
 
-#Resposta da questão 1: recurse(-1,0) vai gerar uma recursividade infinita, pois n == 0 nunca será um resultado. Logo, o loop sempre irá para o else, diminuindo o valor de n em passos de 1.
+#Resposta da questão 1: recurse(-1,0) vai gerar uma recursividade infinita, pois n == 0 nunca será um resultado. 
+#Logo, o loop sempre irá para o else, diminuindo o valor de n em passos de 1.
