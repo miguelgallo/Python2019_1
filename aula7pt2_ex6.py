@@ -15,7 +15,7 @@ def koch(t, l):
     t.lt(60)
     koch(t,l/3)
 	
-#inner angle summation is 360 degrees
+#soma dos ãngulos internos é 360 graus
 def snowflake(t, l):
     koch(t, l)for i in range(3):
         koch(t, n)
