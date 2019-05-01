@@ -35,14 +35,19 @@ class Ponto:
         """ Calcula a inclinação entre um ponto e a origem """
         return (self.y)/(self.x)
     
-     def inclinacao_dois_pontos(self, alvo):
+    def a(self, alvo):
         """ Calcula a inclinação entre um ponto e a origem """
         return (self.y - alvo.y)/(self.x - alvo.x)
 
+    def b(self, alvo):
+        return self.y - self.a(alvo)*self.x
+
     def parametros_reta(self, alvo):
-        """ Calcula os coeficientes de uma reta, dado dois pontos """
-        a = self.inclinação_dois_pontos(alvo)
-        b = 
-        return Ponto(a, b)
+        a = self.a(alvo)
+        b = self.b(alvo)
+        return (a, b)
+
+print(Ponto(4,11).parametros_reta(Ponto(6,15)))
         
 
+    
