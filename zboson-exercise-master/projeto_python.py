@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
+from scipy.stats import crystalball
 from scipy.stats import chi2
 
 ds = pd.read_csv('DoubleMuRun2011A.csv')
@@ -66,18 +67,24 @@ def breitwigner(E, gamma, M, a, b, A):
 def gaussian(x, a, x0, sigma = np.sqrt(sum(y*(x - (sum(x * y) / sum(y)))**2))):
     return a*np.exp(-(x-x0)**2/(2*sigma**2))
 
+#def crystalball(n, x, beta, m, loc, scale):
+#    return crystallball.pdf(n, x, beta, m, loc, scale)
+
 def crystalball(N, a, n, xb, sig, x):
     x = x+0j # Prevent warnings...
-    N, a, n, xb, sig = params
+    #N, a, n, xb, sig = params
     if a < 0:
         a = -a
     if n < 0:
         n = -n
     aa = abs(a)
-    A = (n/aa)**n * exp(- aa**2 / 2)
+    A = (n/aa)**n * np.exp(- aa**2 / 2)
     B = n/aa - aa
+    C = n/aa / (n-1.) * exp(-aa**2/2.)
+    D = sqrt(pi/2.) * (1. + erf(aa/sqrt(2.)))
+    N = 1. / (sig * (C+D))
     total = 0.*x
-    total += ((x-xb)/sig  > -a) * N * exp(- (x-xb)**2/(2.*sig**2))
+    total += ((x-xb)/sig  > -a) * N * np.exp(- (x-xb)**2/(2.*sig**2))
     total += ((x-xb)/sig <= -a) * N * A * (B - (x-xb)/sig)**(-n)
     try:
       return total.real
@@ -123,6 +130,13 @@ while(choice>3 or choice<1):
         print(fifth)
         print("chi2: ", chi2)
 
+        while (chi2 > 0.05, int i = 1, i++):
+            initials_breit1 = [best_breit[0], best_breit[1],best_breit[2],best_breit[3],best_breit[4]]
+            best_breit1, covariance1 = curve_fit(breitwigner, x, y, p0=initials_breit1, sigma=np.sqrt(y))
+            error_breit1 = np.sqrt(np.diag(covariance1))
+        else:
+           break
+            
         plt.plot(x, breitwigner(x, *best_breit), 'r-', label='gamma = {}, M = {}'.format(best_breit[0], best_breit[1]))
         plt.xlabel('Invariant mass [GeV]')
         plt.ylabel('Number of event')
@@ -158,28 +172,33 @@ while(choice>3 or choice<1):
         plt.show()
         
     else:
-        initials_crystal =  [float(x) for x in input('Preencha com os parâmetros da Crystal-Ball  (a, n, xb, sig, x): ').split()] 
+        print("a (defines how the function decreases off peak), \n n (), \n mean (mean, orders the position of the center of the peak ), \n sigma (standard deviation, controls the width of the curve), \n x()")
+        initials_crystal =  [float(x) for x in input('Preencha com os parâmetros da Crystal-Ball  (a, n, mean, sigma, x): ').split()] 
         # Let's import the module that is used in the optimization, run the optimization
         # and calculate the uncertainties of the optimized parameters.
-        best_gauss, covariance = curve_fit(gaussian, x, y, p0=initials_gauss, sigma=np.sqrt(y))
-        error_gauss = np.sqrt(np.diag(covariance))
+        best_crystal, covariance = curve_fit(crystalball, x, y, p0=initials_crystal, sigma=np.sqrt(y))
+        error_crystal = np.sqrt(np.diag(covariance))
 
         # Let's print the values and uncertainties that are got from the optimization.
         print("The values and the uncertainties from the optimization")
         print("")
-        first = "The value of max(y) = {} +- {}".format(best_gauss[0], error_gauss[0])
-        second = "The value of mean = {} +- {}".format(best_gauss[1], error_gauss[1])
-        third = "The value of sigma = {} +- {}".format(best_gauss[2], error_gauss[2])
-        chi2 = (((best_gauss[1]-expected)**2)/best_gauss[1]).sum()
+        first = "The value of a = {} +- {}".format(best_crystal[0], error_crystal[0])
+        second = "The value of n = {} +- {}".format(best_crystal[1], error_crystal[1])
+        third = "The value of mean = {} +- {}".format(best_crystal[2], error_crystal[2])
+        fourth = "The value of sigma = {} +- {}".format(best_crystal[3], error_crystal[3])
+        fifth = "The value of x = {} +- {}".format(best_crystal[4], error_crystal[4])
+        chi2 = (((best_crystal[0]-expected)**2)/best_crystal[0]).sum()
         print(first)
         print(second)
         print(third)
+        print(fourth)
+        print(fifth)
         print("chi2: ", chi2)
 
-        plt.plot(x, gaussian(x, *best_gauss), 'r-', label='x = {}, x0 = {}'.format(best_gauss[0], best_gauss[1]))
+        plt.plot(x, crystalball(x, *best_crystal), 'r-', label='x = {}, x0 = {}'.format(best_crystal[0], best_crystal[1]))
         plt.xlabel('Invariant mass [GeV]')
         plt.ylabel('Number of event')
-        plt.title('The Gaussian fit')
+        plt.title('The CrystalBall fit')
         plt.legend()
         plt.show()
        
