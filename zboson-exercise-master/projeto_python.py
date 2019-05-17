@@ -120,7 +120,7 @@ choice = 0
 #    choice = int(choice)
 if escolha == 1:
     print("gamma (the full width at half maximum (FWHM) of the distribution),\nM (the maximum of the distribution),\na (the slope that is used for noticing the effect of the background),\nb (the y intercept that is used for noticing the effect of the background),\nA (the height of the Breit-Wigner distribution)")
-    initials_breit =  [float(x) for x in input('Preencha com os parâmetros da Briet-Wigner (gamma, M, a, b e A) dando apenas espaços entre eles: ').split()] #Para o Z:[4, 91, -2, 150, 13000] Para o Upsilon: [0.5 9.5 20 -80 200]
+    initials_breit =  [float(x) for x in input('Preencha com os parâmetros da Briet-Wigner (gamma, M, a, b e A) dando apenas espaços entre eles: ').split()] #Para o Z:[4, 91, -2, 150, 13000]
     # Let's import the module that is used in the optimization, run the optimization
     # and calculate the uncertainties of the optimized parameters.
     best_breit, covariance = curve_fit(breitwigner, x, y, p0=initials_breit, sigma=np.sqrt(y))
@@ -131,31 +131,31 @@ if escolha == 1:
     third = "a = {} +- {}".format(best_breit[2], error_breit[2])
     fourth = "b = {} +- {}".format(best_breit[3], error_breit[3])
     fifth = "A = {} +- {}".format(best_breit[4], error_breit[4])
-    chi2 = (((best_breit[1]-expected)**2)/best_breit[1]).sum()                         
+    #chi2 = (((best_breit[1]-expected)**2)/best_breit[1]).sum()                         
     print(first)
     print(second)
     print(third)
     print(fourth)
     print(fifth)
-    print("chi2: ", chi2)
 
-    #while (chi2 >  0.05, best_breit[0] < 3.8, best_breit[0] > 4, best_breit[1] < 89, best_breit[1] > 92, best_breit[2] < -2, best_breit[2] > 0, best_breit[3] < 165, best_breit[3] > 169, best_breit[4] < 13090, best_breit[4] > 13100):
-    #    initials_breit1 = [best_breit[0], best_breit[1], best_breit[2], best_breit[3], best_breit[4]]
-    #    best_breit, covariance = curve_fit(breitwigner, x, y, p0=initials_breit, sigma=np.sqrt(y))
-    #    error_breit = np.sqrt(np.diag(covariance))
-    #    first = "The value of the decay width (gamma) = {} +- {}".format(best_breit[0], error_breit[0])
-    #    second = "The value of the maximum of the distribution (M) = {} +- {}".format(best_breit[1], error_breit[1])
-    #    third = "a = {} +- {}".format(best_breit[2], error_breit[2])
-    #    fourth = "b = {} +- {}".format(best_breit[3], error_breit[3])
-    #    fifth = "A = {} +- {}".format(best_breit[4], error_breit[4])
-    #    chi2 = (((best_breit[1]-expected)**2)/best_breit[1]).sum() 
-    #    print("iterou")
-    #    print(first)
-    #    print(second)
-    #    print(third)
-    #    print(fourth)
-    #    print(fifth)
-    #    print("chi2: ", chi2)
+    dif_breit = [np.absolute(best_breit[0] - initials_breit[0]), np.absolute(best_breit[1] - initials_breit[1]), np.absolute(best_breit[2] - initials_breit[2]), np.absolute(best_breit[3] - initials_breit[3]), np.absolute(best_breit[4] - initials_breit[4])]
+
+    while (dif_breit[0] > 0.1, dif_breit[1] > 0.1, dif_breit[2] > 0.1, dif_breit[3] > 0.1, dif_breit[4] > 0.1):
+        initials_breit = [best_breit[0], best_breit[1], best_breit[2], best_breit[3], best_breit[4]]
+        best_breit, covariance = curve_fit(breitwigner, x, y, p0=initials_breit, sigma=np.sqrt(y))
+        error_breit = np.sqrt(np.diag(covariance))
+        first = "The value of the decay width (gamma) = {} +- {}".format(best_breit[0], error_breit[0])
+        second = "The value of the maximum of the distribution (M) = {} +- {}".format(best_breit[1], error_breit[1])
+        third = "a = {} +- {}".format(best_breit[2], error_breit[2])
+        fourth = "b = {} +- {}".format(best_breit[3], error_breit[3])
+        fifth = "A = {} +- {}".format(best_breit[4], error_breit[4])
+        print("iterou")
+        print(first)
+        print(second)
+        print(third)
+        print(fourth)
+        print(fifth)
+        dif_breit = [np.absolute(best_breit[0] - initials_breit[0]), np.absolute(best_breit[1] - initials_breit[1]), np.absolute(best_breit[2] - initials_breit[2]), np.absolute(best_breit[3] - initials_breit[3]), np.absolute(best_breit[4] - initials_breit[4])]
         
     plt.plot(x, breitwigner(x, *best_breit), 'r-', label='gamma = {}, M = {}'.format(best_breit[0], best_breit[1]))
     plt.xlabel('Invariant mass [GeV]')
