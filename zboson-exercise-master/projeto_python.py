@@ -118,7 +118,7 @@ choice = 0
 #while(choice>3 or choice<1):
 #    choice = eval(input("Escolha 1, 2 ou 3: Enter 1> Breit-Wigner, Enter 2> Gaussian ou Enter 3> Crystal-Ball: "))
 #    choice = int(choice)
-if escolha == 1 or escolha == 5:
+if escolha == 1:
     print("gamma (the full width at half maximum (FWHM) of the distribution),\nM (the maximum of the distribution),\na (the slope that is used for noticing the effect of the background),\nb (the y intercept that is used for noticing the effect of the background),\nA (the height of the Breit-Wigner distribution)")
     initials_breit =  [float(x) for x in input('Preencha com os parâmetros da Briet-Wigner (gamma, M, a, b e A) dando apenas espaços entre eles: ').split()] #Para o Z:[4, 91, -2, 150, 13000] Para o Upsilon: [0.5 9.5 20 -80 200]
     # Let's import the module that is used in the optimization, run the optimization
