@@ -118,7 +118,7 @@ choice = 0
 #while(choice>3 or choice<1):
 #    choice = eval(input("Escolha 1, 2 ou 3: Enter 1> Breit-Wigner, Enter 2> Gaussian ou Enter 3> Crystal-Ball: "))
 #    choice = int(choice)
-if escolha == 1:
+if escolha == 1 or escolha == 5:
     print("gamma (the full width at half maximum (FWHM) of the distribution),\nM (the maximum of the distribution),\na (the slope that is used for noticing the effect of the background),\nb (the y intercept that is used for noticing the effect of the background),\nA (the height of the Breit-Wigner distribution)")
     initials_breit =  [float(x) for x in input('Preencha com os parâmetros da Briet-Wigner (gamma, M, a, b e A) dando apenas espaços entre eles: ').split()] #Para o Z:[4, 91, -2, 150, 13000] Para o Upsilon: [0.5 9.5 20 -80 200]
     # Let's import the module that is used in the optimization, run the optimization
@@ -160,68 +160,72 @@ if escolha == 1:
     plt.plot(x, breitwigner(x, *best_breit), 'r-', label='gamma = {}, M = {}'.format(best_breit[0], best_breit[1]))
     plt.xlabel('Invariant mass [GeV]')
     plt.ylabel('Number of event')
-    plt.title('The Breit-Wigner fit')
+    plt.title('Z with Breit-Wigner fit')
     plt.legend()
     plt.show()
 
 
 elif escolha == 2:
-    initials_gauss =  [float(x) for x in input('Preencha com os parâmetros da Gauss (max(y), mean, sigma): ').split()] 
+    print("gamma (the full width at half maximum (FWHM) of the distribution),\nM (the maximum of the distribution),\na (the slope that is used for noticing the effect of the background),\nb (the y intercept that is used for noticing the effect of the background),\nA (the height of the Breit-Wigner distribution)")
+    initials_breit =  [float(x) for x in input('Preencha com os parâmetros da Briet-Wigner (gamma, M, a, b e A) dando apenas espaços entre eles: ').split()] #Para o Upsilon: [0.2 9.5 50 -370 180]
     # Let's import the module that is used in the optimization, run the optimization
     # and calculate the uncertainties of the optimized parameters.
-    best_gauss, covariance = curve_fit(gaussian, x, y, p0=initials_gauss, sigma=np.sqrt(y))
-    error_gauss = np.sqrt(np.diag(covariance))
-    
-    # Let's print the values and uncertainties that are got from the optimization.
-    print("The values and the uncertainties from the optimization")
-    print("")
-    first = "The value of max(y) = {} +- {}".format(best_gauss[0], error_gauss[0])
-    second = "The value of mean = {} +- {}".format(best_gauss[1], error_gauss[1])
-    third = "The value of sigma = {} +- {}".format(best_gauss[2], error_gauss[2])
-    chi2 = (((best_gauss[1]-expected)**2)/best_gauss[1]).sum()
+    best_breit, covariance = curve_fit(breitwigner, x, y, p0=initials_breit, sigma=np.sqrt(y))
+    error_breit = np.sqrt(np.diag(covariance))
+        
+    first = "The value of the decay width (gamma) = {} +- {}".format(best_breit[0], error_breit[0])
+    second = "The value of the maximum of the distribution (M) = {} +- {}".format(best_breit[1], error_breit[1])
+    third = "a = {} +- {}".format(best_breit[2], error_breit[2])
+    fourth = "b = {} +- {}".format(best_breit[3], error_breit[3])
+    fifth = "A = {} +- {}".format(best_breit[4], error_breit[4])
+    chi2 = (((best_breit[1]-expected)**2)/best_breit[1]).sum()                         
     print(first)
     print(second)
     print(third)
+    print(fourth)
+    print(fifth)
     print("chi2: ", chi2)
 
-    plt.plot(x, gaussian(x, *best_gauss)+line(x, 10, 1), 'r-', label='mean = {}, sigma = {}'.format(best_gauss[1], best_gauss[2]))
-    plt.plot(x, line(x, 150, 1), 'g-')
+    plt.plot(x, breitwigner(x, *best_breit), 'r-', label='gamma = {}, M = {}'.format(best_breit[0], best_breit[1]))
+    plt.plot(x, line(2*x, 150, 1), 'g-')
     plt.xlabel('Invariant mass [GeV]')
     plt.ylabel('Number of event')
-    plt.title('The Gaussian fit')
+    plt.title('Upsilon with Breit-Wigner fit')
     plt.legend()
     plt.show()
 
 elif escolha == 4:
-    initials_gauss =  [float(x) for x in input('Preencha com os parâmetros da Gauss (max(y), mean, sigma): ').split()] 
+    print("gamma (the full width at half maximum (FWHM) of the distribution),\nM (the maximum of the distribution),\na (the slope that is used for noticing the effect of the background),\nb (the y intercept that is used for noticing the effect of the background),\nA (the height of the Breit-Wigner distribution)")
+    initials_breit =  [float(x) for x in input('Preencha com os parâmetros da Briet-Wigner (gamma, M, a, b e A) dando apenas espaços entre eles: ').split()] #Para o Psi-prime: [-1 3.7 -10 100 -10]
     # Let's import the module that is used in the optimization, run the optimization
     # and calculate the uncertainties of the optimized parameters.
-    best_gauss, covariance = curve_fit(gaussian, x, y, p0=initials_gauss, sigma=np.sqrt(y))
-    error_gauss = np.sqrt(np.diag(covariance))
-
-    # Let's print the values and uncertainties that are got from the optimization.
-    print("The values and the uncertainties from the optimization")
-    print("")
-    first = "The value of max(y) = {} +- {}".format(best_gauss[0], error_gauss[0])
-    second = "The value of mean = {} +- {}".format(best_gauss[1], error_gauss[1])
-    third = "The value of sigma = {} +- {}".format(best_gauss[2], error_gauss[2])
-    chi2 = (((best_gauss[1]-expected)**2)/best_gauss[1]).sum()
+    best_breit, covariance = curve_fit(breitwigner, x, y, p0=initials_breit, sigma=np.sqrt(y))
+    error_breit = np.sqrt(np.diag(covariance))
+        
+    first = "The value of the decay width (gamma) = {} +- {}".format(best_breit[0], error_breit[0])
+    second = "The value of the maximum of the distribution (M) = {} +- {}".format(best_breit[1], error_breit[1])
+    third = "a = {} +- {}".format(best_breit[2], error_breit[2])
+    fourth = "b = {} +- {}".format(best_breit[3], error_breit[3])
+    fifth = "A = {} +- {}".format(best_breit[4], error_breit[4])
+    chi2 = (((best_breit[1]-expected)**2)/best_breit[1]).sum()                         
     print(first)
     print(second)
     print(third)
+    print(fourth)
+    print(fifth)
     print("chi2: ", chi2)
 
-    plt.plot(x, gaussian(x, *best_gauss)+line(x, 5, 1), 'r-', label='mean = {}, sigma = {}'.format(best_gauss[1], best_gauss[2]))
+    plt.plot(x, breitwigner(x, *best_breit), 'r-', label='gamma = {}, M = {}'.format(best_breit[0], best_breit[1]))
     plt.plot(x, line(x, 20, 1), 'g-')
     plt.xlabel('Invariant mass [GeV]')
     plt.ylabel('Number of event')
-    plt.title('The Gaussian fit')
+    plt.title('Psi-prime with Breit-Wigner fit')
     plt.legend()
     plt.show()
         
 else:
     print("a (defines how the function decreases off peak), \n n (), \n mean (mean, orders the position of the center of the peak ), \n sigma (standard deviation, controls the width of the curve)")
-    initials_crystal =  [float(x) for x in input('Preencha com os parâmetros da Crystal-Ball  (a, n, mean, sigma): ').split()] 
+    initials_crystal =  [float(x) for x in input('Preencha com os parâmetros da Crystal-Ball  (a, n, mean, sigma): ').split()]#Para J/Psi: [2 0.5 3.5 1] 
     # Let's import the module that is used in the optimization, run the optimization
     # and calculate the uncertainties of the optimized parameters.
     best_crystal, covariance = curve_fit(crystalball, x, y, p0=initials_crystal, sigma=np.sqrt(y))
@@ -241,11 +245,11 @@ else:
     print(fourth)
     print("chi2: ", chi2)
 
-    plt.plot(x, crystalball(x, *best_crystal)+line(x, 50, 0.5), 'r-', label='x = {}, x0 = {}'.format(best_crystal[0], best_crystal[1]))
+    plt.plot(x, crystalball(x, *best_crystal)+line(x, 50, 0.5), 'r-', label='mean = {}, sigma = {}'.format(best_crystal[2], best_crystal[3]))
     plt.plot(x, line(x, 50, 1), 'g-')
     plt.xlabel('Invariant mass [GeV]')
     plt.ylabel('Number of event')
-    plt.title('The CrystalBall fit')
+    plt.title('J/Psi with CrystalBall fit')
     plt.legend()
     plt.show()
        
