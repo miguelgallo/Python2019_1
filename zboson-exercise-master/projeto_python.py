@@ -115,6 +115,8 @@ initials_breit = 0
 initials_gauss = 0
 initials_crystal = 0
 choice = 0
+i = 0
+num_breit = 5
 #while(choice>3 or choice<1):
 #    choice = eval(input("Escolha 1, 2 ou 3: Enter 1> Breit-Wigner, Enter 2> Gaussian ou Enter 3> Crystal-Ball: "))
 #    choice = int(choice)
@@ -131,16 +133,17 @@ if escolha == 1:
     third = "a = {} +- {}".format(best_breit[2], error_breit[2])
     fourth = "b = {} +- {}".format(best_breit[3], error_breit[3])
     fifth = "A = {} +- {}".format(best_breit[4], error_breit[4])
-    #chi2 = (((best_breit[1]-expected)**2)/best_breit[1]).sum()                         
+    #chi2_norm = chi2.pdf(x, best_breit)/(bins - num_breit)                         
     print(first)
     print(second)
     print(third)
     print(fourth)
     print(fifth)
+    #print(chi2_norm)
 
     dif_breit = [np.absolute(best_breit[0] - initials_breit[0]), np.absolute(best_breit[1] - initials_breit[1]), np.absolute(best_breit[2] - initials_breit[2]), np.absolute(best_breit[3] - initials_breit[3]), np.absolute(best_breit[4] - initials_breit[4])]
 
-    while (dif_breit[0] > 0.1, dif_breit[1] > 0.1, dif_breit[2] > 0.1, dif_breit[3] > 0.1, dif_breit[4] > 0.1):
+    while (dif_breit[0] > 0 and dif_breit[1] > 0 and dif_breit[2] > 0 and dif_breit[3] > 0 and dif_breit[4] > 0 and i <= 14):
         initials_breit = [best_breit[0], best_breit[1], best_breit[2], best_breit[3], best_breit[4]]
         best_breit, covariance = curve_fit(breitwigner, x, y, p0=initials_breit, sigma=np.sqrt(y))
         error_breit = np.sqrt(np.diag(covariance))
@@ -149,13 +152,21 @@ if escolha == 1:
         third = "a = {} +- {}".format(best_breit[2], error_breit[2])
         fourth = "b = {} +- {}".format(best_breit[3], error_breit[3])
         fifth = "A = {} +- {}".format(best_breit[4], error_breit[4])
-        print("iterou")
         print(first)
         print(second)
         print(third)
         print(fourth)
         print(fifth)
         dif_breit = [np.absolute(best_breit[0] - initials_breit[0]), np.absolute(best_breit[1] - initials_breit[1]), np.absolute(best_breit[2] - initials_breit[2]), np.absolute(best_breit[3] - initials_breit[3]), np.absolute(best_breit[4] - initials_breit[4])]
+        i += 1
+
+    print("Número de iterações: ", i)
+    if (i == 1):
+        print("O fit ficou bom? Legal! \nNão ficou? Tente outros valores iniciais! ")
+    elif (i >= 1 and i <= 13):
+        print("O fit convergiu!")
+    else:
+        print("O fit provavelmente está divergindo... Tente outros valores iniciais!")
         
     plt.plot(x, breitwigner(x, *best_breit), 'r-', label='gamma = {}, M = {}'.format(best_breit[0], best_breit[1]))
     plt.xlabel('Invariant mass [GeV]')
