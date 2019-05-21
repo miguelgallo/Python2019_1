@@ -227,7 +227,6 @@ elif escolha == 2:
         print("O fit provavelmente está divergindo... Tente outros valores iniciais!")
 
     plt.plot(x, breitwigner(x, *best_breit), 'r-', label='gamma = {}, M = {}'.format(best_breit[0], best_breit[1]))
-    #plt.plot(x, line(2*x, 345, 1), 'g-')
     plt.plot(x, expo(x, 2.85, 0.325), 'g-')
     plt.xlabel('Invariant mass [GeV]')
     plt.ylabel('Number of event')
