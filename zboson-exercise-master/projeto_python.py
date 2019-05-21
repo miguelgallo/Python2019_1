@@ -159,6 +159,7 @@ if escolha == 1:
         print(fifth)
         dif_breit = [np.absolute(best_breit[0] - initials_breit[0]), np.absolute(best_breit[1] - initials_breit[1]), np.absolute(best_breit[2] - initials_breit[2]), np.absolute(best_breit[3] - initials_breit[3]), np.absolute(best_breit[4] - initials_breit[4])]
         i += 1
+        print("Interação número: ", i)
 
     print("Número de iterações: ", i)
     if (i == 1):
@@ -189,16 +190,45 @@ elif escolha == 2:
     third = "a = {} +- {}".format(best_breit[2], error_breit[2])
     fourth = "b = {} +- {}".format(best_breit[3], error_breit[3])
     fifth = "A = {} +- {}".format(best_breit[4], error_breit[4])
-    chi2 = (((best_breit[1]-expected)**2)/best_breit[1]).sum()                         
+    #chi2 = (((best_breit[1]-expected)**2)/best_breit[1]).sum()                         
     print(first)
     print(second)
     print(third)
     print(fourth)
     print(fifth)
-    print("chi2: ", chi2)
+    #print("chi2: ", chi2)
+
+    dif_breit = [np.absolute(best_breit[0] - initials_breit[0]), np.absolute(best_breit[1] - initials_breit[1]), np.absolute(best_breit[2] - initials_breit[2]), np.absolute(best_breit[3] - initials_breit[3]), np.absolute(best_breit[4] - initials_breit[4])]
+
+    while (dif_breit[0] > 0 and dif_breit[1] > 0 and dif_breit[2] > 0 and dif_breit[3] > 0 and dif_breit[4] > 0 and i <= 14):
+        initials_breit = [best_breit[0], best_breit[1], best_breit[2], best_breit[3], best_breit[4]]
+        best_breit, covariance = curve_fit(breitwigner, x, y, p0=initials_breit, sigma=np.sqrt(y))
+        error_breit = np.sqrt(np.diag(covariance))
+        first = "The value of the decay width (gamma) = {} +- {}".format(best_breit[0], error_breit[0])
+        second = "The value of the maximum of the distribution (M) = {} +- {}".format(best_breit[1], error_breit[1])
+        third = "a = {} +- {}".format(best_breit[2], error_breit[2])
+        fourth = "b = {} +- {}".format(best_breit[3], error_breit[3])
+        fifth = "A = {} +- {}".format(best_breit[4], error_breit[4])
+        print(first)
+        print(second)
+        print(third)
+        print(fourth)
+        print(fifth)
+        dif_breit = [np.absolute(best_breit[0] - initials_breit[0]), np.absolute(best_breit[1] - initials_breit[1]), np.absolute(best_breit[2] - initials_breit[2]), np.absolute(best_breit[3] - initials_breit[3]), np.absolute(best_breit[4] - initials_breit[4])]
+        i += 1
+        print("Interação número: ", i)
+
+    print("Número de iterações: ", i)
+    if (i == 1):
+        print("O fit ficou bom? Legal! \nNão ficou? Tente outros valores iniciais! ")
+    elif (i >= 1 and i <= 13):
+        print("O fit convergiu!")
+    else:
+        print("O fit provavelmente está divergindo... Tente outros valores iniciais!")
 
     plt.plot(x, breitwigner(x, *best_breit), 'r-', label='gamma = {}, M = {}'.format(best_breit[0], best_breit[1]))
-    plt.plot(x, line(2*x, 150, 1), 'g-')
+    #plt.plot(x, line(2*x, 345, 1), 'g-')
+    plt.plot(x, expo(x, 2.85, 0.325), 'g-')
     plt.xlabel('Invariant mass [GeV]')
     plt.ylabel('Number of event')
     plt.title('Upsilon with Breit-Wigner fit')
@@ -218,16 +248,44 @@ elif escolha == 4:
     third = "a = {} +- {}".format(best_breit[2], error_breit[2])
     fourth = "b = {} +- {}".format(best_breit[3], error_breit[3])
     fifth = "A = {} +- {}".format(best_breit[4], error_breit[4])
-    chi2 = (((best_breit[1]-expected)**2)/best_breit[1]).sum()                         
+    #chi2 = (((best_breit[1]-expected)**2)/best_breit[1]).sum()                         
     print(first)
     print(second)
     print(third)
     print(fourth)
     print(fifth)
-    print("chi2: ", chi2)
+    #print("chi2: ", chi2)
+
+    dif_breit = [np.absolute(best_breit[0] - initials_breit[0]), np.absolute(best_breit[1] - initials_breit[1]), np.absolute(best_breit[2] - initials_breit[2]), np.absolute(best_breit[3] - initials_breit[3]), np.absolute(best_breit[4] - initials_breit[4])]
+
+    while (dif_breit[0] > 0 and dif_breit[1] > 0 and dif_breit[2] > 0 and dif_breit[3] > 0 and dif_breit[4] > 0 and i <= 14):
+        initials_breit = [best_breit[0], best_breit[1], best_breit[2], best_breit[3], best_breit[4]]
+        best_breit, covariance = curve_fit(breitwigner, x, y, p0=initials_breit, sigma=np.sqrt(y))
+        error_breit = np.sqrt(np.diag(covariance))
+        first = "The value of the decay width (gamma) = {} +- {}".format(best_breit[0], error_breit[0])
+        second = "The value of the maximum of the distribution (M) = {} +- {}".format(best_breit[1], error_breit[1])
+        third = "a = {} +- {}".format(best_breit[2], error_breit[2])
+        fourth = "b = {} +- {}".format(best_breit[3], error_breit[3])
+        fifth = "A = {} +- {}".format(best_breit[4], error_breit[4])
+        print(first)
+        print(second)
+        print(third)
+        print(fourth)
+        print(fifth)
+        dif_breit = [np.absolute(best_breit[0] - initials_breit[0]), np.absolute(best_breit[1] - initials_breit[1]), np.absolute(best_breit[2] - initials_breit[2]), np.absolute(best_breit[3] - initials_breit[3]), np.absolute(best_breit[4] - initials_breit[4])]
+        i += 1
+        print("Interação número: ", i)
+
+    print("Número de iterações: ", i)
+    if (i == 1):
+        print("O fit ficou bom? Legal! \nNão ficou? Tente outros valores iniciais! ")
+    elif (i >= 1 and i <= 13):
+        print("O fit convergiu!")
+    else:
+        print("O fit provavelmente está divergindo... Tente outros valores iniciais!")
 
     plt.plot(x, breitwigner(x, *best_breit), 'r-', label='gamma = {}, M = {}'.format(best_breit[0], best_breit[1]))
-    plt.plot(x, line(x, 20, 1), 'g-')
+    plt.plot(x, expo(x, 10, -1.6), 'g-')
     plt.xlabel('Invariant mass [GeV]')
     plt.ylabel('Number of event')
     plt.title('Psi-prime with Breit-Wigner fit')
@@ -249,15 +307,41 @@ else:
     second = "The value of n = {} +- {}".format(best_crystal[1], error_crystal[1])
     third = "The value of mean = {} +- {}".format(best_crystal[2], error_crystal[2])
     fourth = "The value of sigma = {} +- {}".format(best_crystal[3], error_crystal[3])
-    chi2 = (((best_crystal[2]-expected)**2)/best_crystal[2]).sum()
+    #chi2 = (((best_crystal[2]-expected)**2)/best_crystal[2]).sum()
     print(first)
     print(second)
     print(third)
     print(fourth)
-    print("chi2: ", chi2)
+    #print("chi2: ", chi2)
+
+    dif_crystal = [np.absolute(best_crystal[0] - initials_crystal[0]), np.absolute(best_crystal[1] - initials_crystal[1]), np.absolute(best_crystal[2] - initials_crystal[2]), np.absolute(best_crystal[3] - initials_crystal[3])]
+
+    while (dif_crystal[0] > 0 and dif_crystal[1] > 0 and dif_crystal[2] > 0 and dif_crystal[3] > 0 and i <= 14):
+        initials_crystal = [best_crystal[0], best_crystal[1], best_crystal[2], best_crystal[3]]
+        best_crystal, covariance = curve_fit(crystalball, x, y, p0=initials_crystal, sigma=np.sqrt(y))
+        error_crystal = np.sqrt(np.diag(covariance))
+        first = "The value of a = {} +- {}".format(best_crystal[0], error_crystal[0])
+        second = "The value of n = {} +- {}".format(best_crystal[1], error_crystal[1])
+        third = "The value of mean = {} +- {}".format(best_crystal[2], error_crystal[2])
+        fourth = "The value of sigma = {} +- {}".format(best_crystal[3], error_crystal[3])
+        print(first)
+        print(second)
+        print(third)
+        print(fourth)
+        dif_crystal = [np.absolute(best_crystal[0] - initials_crystal[0]), np.absolute(best_crystal[1] - initials_crystal[1]), np.absolute(best_crystal[2] - initials_crystal[2]), np.absolute(best_crystal[3] - initials_crystal[3])]
+        i += 1
+        print("Interação número: ", i)
+
+    print("Número de iterações: ", i)
+    if (i == 1):
+        print("O fit ficou bom? Legal! \nNão ficou? Tente outros valores iniciais! ")
+    elif (i >= 1 and i <= 13):
+        print("O fit convergiu!")
+    else:
+        print("O fit provavelmente está divergindo... Tente outros valores iniciais!")
 
     plt.plot(x, crystalball(x, *best_crystal)+line(x, 50, 0.5), 'r-', label='mean = {}, sigma = {}'.format(best_crystal[2], best_crystal[3]))
-    plt.plot(x, line(x, 50, 1), 'g-')
+    plt.plot(x, expo(x, 14.3, -3.15), 'g-')
     plt.xlabel('Invariant mass [GeV]')
     plt.ylabel('Number of event')
     plt.title('J/Psi with CrystalBall fit')
