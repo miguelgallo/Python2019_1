@@ -26,8 +26,8 @@ while(escolha>4 or escolha<1):
         upperlimit = 110
          
     elif escolha == 2:
-        lowerlimit = 9.15
-        upperlimit = 9.75
+        lowerlimit = 9.2
+        upperlimit = 10.2
          
     elif escolha == 3:
         lowerlimit = 2.95
@@ -105,6 +105,9 @@ def crystalexpo(x, a, n, xb, sig, const, slope): #6 parâmetros
 def doublecrystal(x, a1, n1, xb1, sig1, a2, n2, xb2, sig2): #8 parâmetros
     return (crystalball(x, a1, n1, xb1, sig1)+crystalball(x, a2, n2, xb2, sig2))
 
+def gaussianexpo(x, a, x0, sigma, const, slope): #5 parâmetros
+    return(gaussian(x, a, x0, sigma)+expo(x, const, slope))
+
 def doublecrystalexpo(x, a1, n1, xb1, sig1, a2, n2, xb2, sig2, const, slope): #10 parâmetros
     return(doublecrystal(x, a1, n1, xb1, sig1, a2, n2, xb2, sig2)+expo(x, const, slope))
 
@@ -121,11 +124,12 @@ initials_gauss = 0
 initials_crystal = 0
 initials_upsilon = 0
 initials_psiprime = 0
+initials_jpsi = 0
 choice = 0
 i = 0
 
 if escolha == 1:
-    print("gamma (a largura total do meio no máximo da distribuição),\nM(valor onde ocorre o máximo da distribuição),\na (inclinação que é usada para pereber o efeito de backgrund),\nb (intercepção em y, que é usada para perceber o efeito de background),\nA (amplitude da distribuição de Breit-Wigner)")
+    print(" gamma (a largura total do meio no máximo da distribuição),\n M(valor onde ocorre o máximo da distribuição),\n a (inclinação que é usada para pereber o efeito de backgrund),\n b (intercepção em y, que é usada para perceber o efeito de background),\n A (amplitude da distribuição de Breit-Wigner)")
     initials_breit =  [float(x) for x in input('Preencha com os parâmetros da Briet-Wigner (gamma, M, a, b, A) dando apenas espaços entre eles: ').split()] #Para o Z:[4, 91, -2, 150, 13000]
     # Vamos importar o módulo que é usado na otimização, executar a otimização e calcular as incertezas dos parâmetros otimizados.
     best_breit, covariance = curve_fit(breitwigner, x, y, p0=initials_breit, sigma=np.sqrt(y))
@@ -177,8 +181,10 @@ if escolha == 1:
     else:
         print("O fit provavelmente está divergindo... Tente outros valores iniciais!")
 
-    print(chisquare(y, breitwigner(x, best_breit[0], best_breit[1], best_breit[2], best_breit[3], best_breit[4])))
-    print(power_divergence(y, breitwigner(x, 4, 91, -2, 150, 13000), lambda_="neyman"))
+    ch2, pval = chisquare(y, breitwigner(x, *best_breit))
+    test = ch2 /(bins - 5)
+    print('O valor do chi2 dividido pelo número de graus de liberdade é: %6.3f' % (test))
+
     plt.plot(x, breitwigner(x, *best_breit), 'r-', label='gamma = {}, M = {}'.format(best_breit[0], best_breit[1]))
     plt.xlabel('Massa Invariante [GeV]')
     plt.ylabel('Número de Eventos')
@@ -188,25 +194,23 @@ if escolha == 1:
 
 
 elif escolha == 2:
-    print("a (define como a função decresce no pico), \n n (), \n mean (mean, ordena a posição do centro do pico), \n sigma (desvio padrão, controla a largura da curva), \n const e inclinação (np.exp(const + inclinação*x))")
-    initials_upsilon =  [float(x) for x in input('Preencha com os parâmetros das duas CrystalBall e da exponencial (a1, n1, mean1, sigma1, a2, n2, mean2, sigma2, constante, inclinação) dando apenas espaços entre eles: ').split()] #Para o Upsilon: [0.2 9.5 50 -370 180]
+    print(" a (altura do pico), \n mean (mean, ordena a posição do centro do pico), \n sigma (desvio padrão, controla a largura da curva), \n const e inclinação (np.exp(const + inclinação*x))")
+    initials_upsilon =  [float(x) for x in input('Preencha com os parâmetros das duas Gaussianas e da exponencial (a1, mean1, sigma1, a2, mean2, sigma2, constante, inclinação): ').split()] #Para o Psi-prime: [1 0 3.7 1 0 -1]
     # Vamos importar o módulo que é usado na otimização, executar a otimização e calcular as incertezas dos parâmetros otimizados.
-    best_upsilon, covariance = curve_fit(doublecrystalexpo, x, y, p0=initials_upsilon, sigma=np.sqrt(y))
+    best_upsilon, covariance = curve_fit(doublegaussianexpo, x, y, p0=initials_upsilon, sigma=np.sqrt(y))
     error_upsilon = np.sqrt(np.diag(covariance))
 
     # Vamos imprimir os valores e incertezas obtidos com a otimização.
     print("Valores com incertezas")
     print("")
     primeiro = "Valor de a1 = {} +- {}".format(best_upsilon[0], error_upsilon[0])
-    segundo = "Valor de n1 = {} +- {}".format(best_upsilon[1], error_upsilon[1])
-    terceiro = "Valor de mean1 = {} +- {}".format(best_upsilon[2], error_upsilon[2])
-    quarto = "Valor de sigma1 = {} +- {}".format(best_upsilon[3], error_upsilon[3])
-    quinto = "Valor de a2 = {} +- {}".format(best_upsilon[4], error_upsilon[4])
-    sexto = "Valor de n2 = {} +- {}".format(best_upsilon[5], error_upsilon[5])
-    setimo = "Valor de mean2 = {} +- {}".format(best_upsilon[6], error_upsilon[6])
-    oitavo = "Valor de sigma2 = {} +- {}".format(best_upsilon[7], error_upsilon[7])
-    nono = "Valor da constante = {} +- {}".format(best_upsilon[8], error_upsilon[8])
-    decimo = "Valor da inclinação = {} +- {}".format(best_upsilon[9], error_upsilon[9])
+    segundo = "Valor de mean1 = {} +- {}".format(best_upsilon[1], error_upsilon[1])
+    terceiro = "Valor de sigma1 = {} +- {}".format(best_upsilon[2], error_upsilon[2])
+    quarto = "Valor de a2 = {} +- {}".format(best_upsilon[3], error_upsilon[3])
+    quinto = "Valor de mean2 = {} +- {}".format(best_upsilon[4], error_upsilon[4])
+    sexto = "Valor de sigma2 = {} +- {}".format(best_upsilon[5], error_upsilon[5])
+    setimo = "Value de constante = {} +- {}".format(best_upsilon[6], error_upsilon[6])
+    oitavo = "Valor da inclinação = {} +- {}".format(best_upsilon[7], error_upsilon[7])
     print(primeiro)
     print(segundo)
     print(terceiro)
@@ -215,27 +219,23 @@ elif escolha == 2:
     print(sexto)
     print(setimo)
     print(oitavo)
-    print(nono)
-    print(decimo)
 
     # Diferença entre os valores iniciais e o melhor valor após o 1º curve_fit
-    dif_upsilon = [np.absolute(best_upsilon[0] - initials_upsilon[0]), np.absolute(best_upsilon[1] - initials_upsilon[1]),  np.absolute(best_upsilon[2] - initials_upsilon[2]), np.absolute(best_upsilon[3] - initials_upsilon[3]), np.absolute(best_upsilon[4] - initials_upsilon[4]), np.absolute(best_upsilon[5] - initials_upsilon[5]), np.absolute(best_upsilon[6] - initials_upsilon[6]), np.absolute(best_upsilon[7] - initials_upsilon[7]), np.absolute(best_upsilon[8] - initials_upsilon[8]), np.absolute(best_upsilon[9] - initials_upsilon[9])]
+    dif_upsilon = [np.absolute(best_upsilon[0] - initials_upsilon[0]), np.absolute(best_upsilon[1] - initials_upsilon[1]), np.absolute(best_upsilon[2] - initials_upsilon[2]), np.absolute(best_upsilon[3] - initials_upsilon[3]), np.absolute(best_upsilon[4] - initials_upsilon[4]), np.absolute(best_upsilon[5] - initials_upsilon[5]), np.absolute(best_upsilon[6] - initials_upsilon[6]), np.absolute(best_upsilon[7] - initials_upsilon[7])]
 
     # Interação para convergir para o melhor valor dos parâmetros
-    while (dif_upsilon[0] > 0 and dif_upsilon[1] > 0 and dif_upsilon[2] > 0 and dif_upsilon[3] > 0 and dif_upsilon[4] > 0 and dif_upsilon[5] > 0 and dif_upsilon[6] > 0 and dif_upsilon[7] > 0 and dif_upsilon[8] > 0 and dif_upsilon[9] > 0 and i <= 14):
-        initials_upsilon = [best_upsilon[0], best_upsilon[1], best_upsilon[2], best_upsilon[3], best_upsilon[4], best_upsilon[5], best_upsilon[6], best_upsilon[7], best_upsilon[8], best_upsilon[9]]
-        best_upsilon, covariance = curve_fit(doublecrystalexpo, x, y, p0=initials_upsilon, sigma=np.sqrt(y))
+    while (dif_upsilon[0] > 0 and dif_upsilon[1] > 0 and dif_upsilon[2] > 0 and dif_upsilon[3] > 0 and dif_upsilon[4] > 0 and dif_upsilon[5] > 0 and dif_upsilon[6] > 0 and dif_upsilon[7] > 0 and i <= 14):
+        initials_upsilon = [best_upsilon[0], best_upsilon[1], best_upsilon[2], best_upsilon[3], best_upsilon[4], best_upsilon[5], best_upsilon[6], best_upsilon[7]]
+        best_upsilon, covariance = curve_fit(doublegaussianexpo, x, y, p0=initials_upsilon, sigma=np.sqrt(y))
         error_upsilon = np.sqrt(np.diag(covariance))
         primeiro = "Valor de a1 = {} +- {}".format(best_upsilon[0], error_upsilon[0])
-        segundo = "Valor de n1 = {} +- {}".format(best_upsilon[1], error_upsilon[1])
-        terceiro = "Valor de mean1 = {} +- {}".format(best_upsilon[2], error_upsilon[2])
-        quarto = "Valor de sigma1 = {} +- {}".format(best_upsilon[3], error_upsilon[3])
-        quinto = "Valor de a2 = {} +- {}".format(best_upsilon[4], error_upsilon[4])
-        sexto = "Valor de n2 = {} +- {}".format(best_upsilon[5], error_upsilon[5])
-        setimo = "Valor de mean2 = {} +- {}".format(best_upsilon[6], error_upsilon[6])
-        oitavo = "Valor de sigma2 = {} +- {}".format(best_upsilon[7], error_upsilon[7])
-        nono = "Valor da constante = {} +- {}".format(best_upsilon[8], error_upsilon[8])
-        decimo = "Valor da inclinação = {} +- {}".format(best_upsilon[9], error_upsilon[9])
+        segundo = "Valor de mean1 = {} +- {}".format(best_upsilon[1], error_upsilon[1])
+        terceiro = "Valor de sigma1 = {} +- {}".format(best_upsilon[2], error_upsilon[2])
+        quarto = "Valor de a2 = {} +- {}".format(best_upsilon[3], error_upsilon[3])
+        quinto = "Valor de mean2 = {} +- {}".format(best_upsilon[4], error_upsilon[4])
+        sexto = "Valor de sigma2 = {} +- {}".format(best_upsilon[5], error_upsilon[5])
+        setimo = "Value de constante = {} +- {}".format(best_upsilon[6], error_upsilon[6])
+        oitavo = "Valor da inclinação = {} +- {}".format(best_upsilon[7], error_upsilon[7])
         print(primeiro)
         print(segundo)
         print(terceiro)
@@ -244,9 +244,7 @@ elif escolha == 2:
         print(sexto)
         print(setimo)
         print(oitavo)
-        print(nono)
-        print(decimo)
-        dif_upsilon = [np.absolute(best_upsilon[0] - initials_upsilon[0]), np.absolute(best_upsilon[1] - initials_upsilon[1]),  np.absolute(best_upsilon[2] - initials_upsilon[2]), np.absolute(best_upsilon[3] - initials_upsilon[3]), np.absolute(best_upsilon[4] - initials_upsilon[4]), np.absolute(best_upsilon[5] - initials_upsilon[5]), np.absolute(best_upsilon[6] - initials_upsilon[6]), np.absolute(best_upsilon[7] - initials_upsilon[7]), np.absolute(best_upsilon[8] - initials_upsilon[8]), np.absolute(best_upsilon[9] - initials_upsilon[9])]
+        dif_upsilon = [np.absolute(best_upsilon[0] - initials_upsilon[0]), np.absolute(best_upsilon[1] - initials_upsilon[1]), np.absolute(best_upsilon[2] - initials_upsilon[2]), np.absolute(best_upsilon[3] - initials_upsilon[3]), np.absolute(best_upsilon[4] - initials_upsilon[4]), np.absolute(best_upsilon[5] - initials_upsilon[5]), np.absolute(best_upsilon[6] - initials_upsilon[6]), np.absolute(best_upsilon[7] - initials_upsilon[7])]
         i += 1
         print("Interação número: ", i)
 
@@ -257,30 +255,34 @@ elif escolha == 2:
         print("O fit convergiu!")
     else:
         print("O fit provavelmente está divergindo... Tente outros valores iniciais!")
+    
+    ch2, pval = chisquare(y, doublegaussianexpo(x, *best_upsilon))
+    test = ch2 /(bins - 8)
+    print('O valor do chi2 dividido pelo número de graus de liberdade é: %6.3f' % (test))
 
-    plt.plot(x, doublecrystalexpo(x, *best_upsilon), 'r-')
+    plt.plot(x, doublegaussianexpo(x, *best_upsilon), 'r-')
     plt.xlabel('Massa Invariante [GeV]')
     plt.ylabel('Número de Eventos')
-    plt.title('Upsilon: Ajuste com Dupla CrystalBall + Exponencial')
+    plt.title('Upsilon: Ajuste com Duas Gaussianas + Exponencial')
     plt.legend()
     plt.show()
 
 elif escolha == 4:
-    print("a (define como a função decresce no pico), \n n (), \n mean (mean, ordena a posição do centro do pico), \n sigma (desvio padrão, controla a largura da curva), \n const e inclinação (np.exp(const + inclinação*x))")
-    initials_jpsi =  [float(x) for x in input('Preencha com os parâmetros da Crystal-Ball e da exponencial (a, n, mean, sigma, constante, inclinação): ').split()] #Para o Psi-prime: [-1 3.7 -10 100 -10]
+    print(" a (define como a função decresce no pico), \n n (), \n mean (mean, ordena a posição do centro do pico), \n sigma (desvio padrão, controla a largura da curva), \n const e inclinação (np.exp(const + inclinação*x))")
+    initials_psiprime =  [float(x) for x in input('Preencha com os parâmetros da Crystal-Ball e da exponencial (a, n, mean, sigma, constante, inclinação): ').split()] #Para o Psi-prime: [1 0 3.7 1 0 -1]
     # Vamos importar o módulo que é usado na otimização, executar a otimização e calcular as incertezas dos parâmetros otimizados.
-    best_jpsi, covariance = curve_fit(crystalexpo, x, y, p0=initials_jpsi, sigma=np.sqrt(y))
-    error_jpsi = np.sqrt(np.diag(covariance))
+    best_psiprime, covariance = curve_fit(crystalexpo, x, y, p0=initials_psiprime, sigma=np.sqrt(y))
+    error_psiprime = np.sqrt(np.diag(covariance))
 
     # Vamos imprimir os valores e incertezas obtidos com a otimização.
     print("Valores com incertezas")
     print("")
-    primeiro = "Valor de a = {} +- {}".format(best_jpsi[0], error_jpsi[0])
-    segundo = "Valor de n = {} +- {}".format(best_jpsi[1], error_jpsi[1])
-    terceiro = "Valor de mean = {} +- {}".format(best_jpsi[2], error_jpsi[2])
-    quarto = "Value de sigma = {} +- {}".format(best_jpsi[3], error_jpsi[3])
-    quinto = "Valor da constante = {} +- {}".format(best_jpsi[4], error_jpsi[4])
-    sexto = "Valor da inclinação = {} +- {}".format(best_jpsi[5], error_jpsi[5])
+    primeiro = "Valor de a = {} +- {}".format(best_psiprime[0], error_psiprime[0])
+    segundo = "Valor de n = {} +- {}".format(best_psiprime[1], error_psiprime[1])
+    terceiro = "Valor de mean = {} +- {}".format(best_psiprime[2], error_psiprime[2])
+    quarto = "Value de sigma = {} +- {}".format(best_psiprime[3], error_psiprime[3])
+    quinto = "Valor da constante = {} +- {}".format(best_psiprime[4], error_psiprime[4])
+    sexto = "Valor da inclinação = {} +- {}".format(best_psiprime[5], error_psiprime[5])
     print(primeiro)
     print(segundo)
     print(terceiro)
@@ -289,26 +291,26 @@ elif escolha == 4:
     print(sexto)
 
     # Diferença entre os valores iniciais e o melhor valor após o 1º curve_fit
-    dif_jpsi = [np.absolute(best_jpsi[0] - initials_jpsi[0]), np.absolute(best_jpsi[1] - initials_jpsi[1]), np.absolute(best_jpsi[2] - initials_jpsi[2]), np.absolute(best_jpsi[3] - initials_jpsi[3]), np.absolute(best_jpsi[4] - initials_jpsi[4]), np.absolute(best_jpsi[5] - initials_jpsi[5])]
+    dif_psiprime = [np.absolute(best_psiprime[0] - initials_psiprime[0]), np.absolute(best_psiprime[1] - initials_psiprime[1]), np.absolute(best_psiprime[2] - initials_psiprime[2]), np.absolute(best_psiprime[3] - initials_psiprime[3]), np.absolute(best_psiprime[4] - initials_psiprime[4]), np.absolute(best_psiprime[5] - initials_psiprime[5])]
 
     # Interação para convergir para o melhor valor dos parâmetros
-    while (dif_jpsi[0] > 0 and dif_jpsi[1] > 0 and dif_jpsi[2] > 0 and dif_jpsi[3] > 0 and dif_jpsi[4] > 0 and dif_jpsi[5] > 0 and i <= 14):
-        initials_jpsi = [best_jpsi[0], best_jpsi[1], best_jpsi[2], best_jpsi[3], best_jpsi[4], best_jpsi[5]]
-        best_jpsi, covariance = curve_fit(crystalexpo, x, y, p0=initials_jpsi, sigma=np.sqrt(y))
-        error_jpsi = np.sqrt(np.diag(covariance))
-        primeiro = "Valor de a = {} +- {}".format(best_jpsi[0], error_jpsi[0])
-        segundo = "Valor de n = {} +- {}".format(best_jpsi[1], error_jpsi[1])
-        terceiro = "Valor de mean = {} +- {}".format(best_jpsi[2], error_jpsi[2])
-        quarto = "Value de sigma = {} +- {}".format(best_jpsi[3], error_jpsi[3])
-        quinto = "Valor da constante = {} +- {}".format(best_jpsi[4], error_jpsi[4])
-        sexto = "Valor da inclinação = {} +- {}".format(best_jpsi[5], error_jpsi[5])
+    while (dif_psiprime[0] > 0 and dif_psiprime[1] > 0 and dif_psiprime[2] > 0 and dif_psiprime[3] > 0 and dif_psiprime[4] > 0 and dif_psiprime[5] > 0 and i <= 14):
+        initials_psiprime = [best_psiprime[0], best_psiprime[1], best_psiprime[2], best_psiprime[3], best_psiprime[4], best_psiprime[5]]
+        best_psiprime, covariance = curve_fit(crystalexpo, x, y, p0=initials_psiprime, sigma=np.sqrt(y))
+        error_psiprime = np.sqrt(np.diag(covariance))
+        primeiro = "Valor de a = {} +- {}".format(best_psiprime[0], error_psiprime[0])
+        segundo = "Valor de n = {} +- {}".format(best_psiprime[1], error_psiprime[1])
+        terceiro = "Valor de mean = {} +- {}".format(best_psiprime[2], error_psiprime[2])
+        quarto = "Value de sigma = {} +- {}".format(best_psiprime[3], error_psiprime[3])
+        quinto = "Valor da constante = {} +- {}".format(best_psiprime[4], error_psiprime[4])
+        sexto = "Valor da inclinação = {} +- {}".format(best_psiprime[5], error_psiprime[5])
         print(primeiro)
         print(segundo)
         print(terceiro)
         print(quarto)
         print(quinto)
         print(sexto)
-        dif_jpsi = [np.absolute(best_jpsi[0] - initials_jpsi[0]), np.absolute(best_jpsi[1] - initials_jpsi[1]), np.absolute(best_jpsi[2] - initials_jpsi[2]), np.absolute(best_jpsi[3] - initials_jpsi[3]), np.absolute(best_jpsi[4] - initials_jpsi[4]), np.absolute(best_jpsi[5] - initials_jpsi[5])]
+        dif_psiprime = [np.absolute(best_psiprime[0] - initials_psiprime[0]), np.absolute(best_psiprime[1] - initials_psiprime[1]), np.absolute(best_psiprime[2] - initials_psiprime[2]), np.absolute(best_psiprime[3] - initials_psiprime[3]), np.absolute(best_psiprime[4] - initials_psiprime[4]), np.absolute(best_psiprime[5] - initials_psiprime[5])]
         i += 1
         print("Interação número: ", i)
 
@@ -319,18 +321,21 @@ elif escolha == 4:
         print("O fit convergiu!")
     else:
         print("O fit provavelmente está divergindo... Tente outros valores iniciais!")
+    
+    ch2, pval = chisquare(y, crystalexpo(x, *best_psiprime))
+    test = ch2 /(bins - 6)
+    print('O valor do chi2 dividido pelo número de graus de liberdade é: %6.3f' % (test))
 
-    plt.plot(x, crystalexpo(x, *best_jpsi), 'r-')
+    plt.plot(x, crystalexpo(x, *best_psiprime), 'r-')
     plt.xlabel('Massa Invariante [GeV]')
     plt.ylabel('Número de Eventos')
     plt.title('Psi-prime: Ajuste com CrystalBall + Exponencial')
     plt.legend()
     plt.show()
 
-    
 else:
-    print("a (define como a função decresce no pico), \n n (), \n mean (mean, ordena a posição do centro do pico), \n sigma (desvio padrão, controla a largura da curva), \n const e inclinação (np.exp(const + inclinação*x))")
-    initials_jpsi =  [float(x) for x in input('Preencha com os parâmetros da Crystal-Ball e da exponencial (a, n, mean, sigma, constante, inclinação): ').split()]#Para J/Psi: [2 0.5 3.5 1] 
+    print(" a (define como a função decresce no pico), \n n (), \n mean (mean, ordena a posição do centro do pico), \n sigma (desvio padrão, controla a largura da curva), \n const e inclinação (np.exp(const + inclinação*x))")
+    initials_jpsi =  [float(x) for x in input('Preencha com os parâmetros da Crystal-Ball e da exponencial (a, n, mean, sigma, constante, inclinação): ').split()] #Para o Psi-prime: [1 0 3.7 1 0 -1]
     # Vamos importar o módulo que é usado na otimização, executar a otimização e calcular as incertezas dos parâmetros otimizados.
     best_jpsi, covariance = curve_fit(crystalexpo, x, y, p0=initials_jpsi, sigma=np.sqrt(y))
     error_jpsi = np.sqrt(np.diag(covariance))
@@ -350,12 +355,11 @@ else:
     print(quarto)
     print(quinto)
     print(sexto)
-
     # Diferença entre os valores iniciais e o melhor valor após o 1º curve_fit
     dif_jpsi = [np.absolute(best_jpsi[0] - initials_jpsi[0]), np.absolute(best_jpsi[1] - initials_jpsi[1]), np.absolute(best_jpsi[2] - initials_jpsi[2]), np.absolute(best_jpsi[3] - initials_jpsi[3]), np.absolute(best_jpsi[4] - initials_jpsi[4]), np.absolute(best_jpsi[5] - initials_jpsi[5])]
 
     # Interação para convergir para o melhor valor dos parâmetros
-    while (dif_jpsi[0] > 0 and dif_jpsi[1] > 0 and dif_jpsi[2] > 0 and dif_jpsi[3] > 0 and dif_jpsi[4] > 0 and dif_jpsi[5] > 0 and i <= 14):
+    while (dif_jpsi[0] > 0 and dif_jpsi[1] > 0 and dif_jpsi[2] > 0 and dif_jpsi[3] > 0 and dif_jpsi[4] > 0 and dif_jpsi[5] and i <= 14):
         initials_jpsi = [best_jpsi[0], best_jpsi[1], best_jpsi[2], best_jpsi[3], best_jpsi[4], best_jpsi[5]]
         best_jpsi, covariance = curve_fit(crystalexpo, x, y, p0=initials_jpsi, sigma=np.sqrt(y))
         error_jpsi = np.sqrt(np.diag(covariance))
@@ -382,10 +386,14 @@ else:
         print("O fit convergiu!")
     else:
         print("O fit provavelmente está divergindo... Tente outros valores iniciais!")
+    
+    ch2, pval = chisquare(y, crystalexpo(x, *best_jpsi))
+    test = ch2 /(bins - 6)
+    print('O valor do chi2 dividido pelo número de graus de liberdade é: %6.3f' % (test))
 
     plt.plot(x, crystalexpo(x, *best_jpsi), 'r-')
     plt.xlabel('Massa Invariante [GeV]')
     plt.ylabel('Número de Eventos')
-    plt.title('J/Psi: Ajuste com CrystalBall')
+    plt.title('J/Psi: Ajuste com Gaussian + Exponencial')
     plt.legend()
     plt.show()
