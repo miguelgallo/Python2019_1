@@ -11,12 +11,13 @@ def ler_arquivos(filename):
     print("Primeira coluna: ", x)
     print("Segunda coluna: ", y)
     print("Terceira coluna: ", z)
+    return x, y ,z
 
 def numero_colunas(filename):
     n_column = np.loadtxt(filename, dtype='str').shape[1]
-    print("Numero de colunas: ", n_column)
+    return n_column
 
 if __name__ == '__main__':
     ler_arquivos('dados_alunos.txt')
     ler_arquivos('dados_alunos1.txt')
-    numero_colunas('dados_alunos.txt')
+    print("Numero de colunas: ", numero_colunas('dados_alunos.txt'))
