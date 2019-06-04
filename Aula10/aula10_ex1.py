@@ -13,20 +13,23 @@ y1=[math.exp(-xi) for xi in x1]
 plt.plot(x1,y1)
 #plt.show()
 
-S1= 0
-dx = 0.01
-I_a = 0.9999546000702375
-
-S1 = (0.01*I_a) + I_a 
-print(S1)
-
 S1 = 0
-j = 0
+xfim = 10
+I_a = 1 - math.exp(-xfim)
+n = 100
 
-for xi in x1:
-    if S1 != 1.0099541460709398:
-        S1 = S1+ math.exp(-xi) * j
-    else:
-        continue
-    j = j+1
-print("Soma 1000 caixinhas = ",S1)
+while abs(S1- I_a)/I_a > 0.01 :
+    S1 =0
+    dx = xfim/n
+    xi=0
+    for i in range (0,n):
+        S1 += math.exp(-xi) * dx
+        xi += dx
+    n += 1
+    print(S1)
+    
+print("Soma {0} caixinhas = {1}".format(n-1,S1))
+
+
+    
+    
