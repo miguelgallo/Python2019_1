@@ -1,30 +1,43 @@
-import matplotlib.pyplot as plt 
+import matplotlib.pyplot as plt
+import math 
 
-d0 = 5    #distancia inicial
-dac = 5.2   #distancia percorrida com aceleração
-dfin = 7  #distancia final
-v0 = 12   #velocidade inicial
-v1 = 15   #velocidade após acelerar 
-a = 202.5 #acelaração
+def a(v0,v1,x0,x1): 
+    """ aceleração usando Torricelli """
+    return (0.5*(v1**2 - v0**2))/(x1 - x0)
 
-tac = [i for i in range(0,2)]  #intervalos de 1 minuto (onde ocorre a aceleração)
-dac = [d0 + (v0/60)*ti + (((a/3600)*(ti**2))/2) for ti in tac]
-t2 = [i for i in range(2,8)]  #intervalos de 1 minutos, entre 1 a 7min (onde não tem mais acelaração)
-d2 = [dac[1] + (v1/60)*tin for tin in t2]
-t = tac + t2
-d = dac + d2
+x0 = 5     #distancia inicial
+x1 = 5.2   #distancia percorrida com aceleração
+xfin = 7   #distancia final
+v0 = 12    #velocidade inicial
+v1 = 15    #velocidade após acelerar
+a = a(v0,v1,x0,x1)/3600
+print(a)
 
-print(tac)
-print(dac)
-print(t2)
-print(d2)
-print(t)
-print(d)
-print(len(t))
-print(len(d))
+t1 = [i for i in range(0,2)]  #intervalos de 1 minuto (onde ocorre a aceleração)
+v=[]
+v.append(12/60)
+x=[]
+x.append(5)
+dt1 = t1[1]-t1[0]
 
-plt.plot(t,d)
+t2 = [i for i in range(2,9)]
+dt2 = t2[1] - t2[0]
+
+for i in range(1,2):
+    xi = x[i-1] + v[i-1]*dt1
+    x.append(xi)
+    vi = v[i-1] + a*dt1
+    v.append(vi)
+
+print(v)
+
+for j in range(2,9):
+    xj = x[j-1] + v[-1]*dt2
+    x.append(xj)
+
+t = t1 + t2
+
+plt.plot(t,x)
 plt.xlabel("tempo(min)")
 plt.ylabel("distancia(km)")
 plt.show()
-
