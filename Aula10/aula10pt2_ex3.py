@@ -7,7 +7,7 @@ import matplotlib.animation as animation
 def simple_pendulum_deriv(x, t, m, g, l): 
     nx = np.zeros(2)
     nx[0] = x[1]
-    nx[1] = -(m * g * l * np.sin(x[0])) 
+    nx[1] = -((g/l) * np.sin(x[0])) 
     return nx
 
 x0 = [np.pi - 0.1, 0.0]
