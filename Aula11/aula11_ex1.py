@@ -15,5 +15,9 @@ dic_rc5x5 = {(rx, cx): c for rx, r in enumerate(matriz5x5)\
 pprint(matriz5x5, width=30)
 print('-'*32)
 # Mostra o dicionário da matriz
+print(dic_rc5x5.get((0,3)))
+print(dic_rc5x5.get((2,1)))
+print(dic_rc5x5.get((4,3)))
+print(dic_rc5x5.get((2,2)))
 pprint(dic_rc5x5)
 print('-'*30)
