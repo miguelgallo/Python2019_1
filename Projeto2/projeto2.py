@@ -1,27 +1,40 @@
-# Primeiro, precisamos carregar os módulos
+# Primeiro, precisamos carregar os módulos, onde o pylab é a junção do pyplot com o numpy.
 from pylab import plot, show, ylim, xlim, xlabel, ylabel, grid, scatter, legend
 # Para converter os dados de coordenadas polares para cartesianas, 
-# vamos precisar das funções seno e cosseno
+# vamos precisar das funções seno e cosseno.
 from math import cos, sin, pi
 
+######################################################################################################
+########### P R O J E T O   P Y T H O N   2  -  A P O L L O, B E R N A R D  E  M I G U E L ###########   
+######################################################################################################
+
+# Estamos usando o sistema CGS de unidades.
+
 # Vamos precisar da constante universal de gravitação.
-# Vamos usar a constante gravitacional heliocêntrica.
 k = 0.01720209395
+# Vamos usar a constante gravitacional heliocêntrica.
 GM = k**2
 
 # Precisamos definir as condições iniciais. 
-# As distâncias são dadas em UA e o tempo em dias.
+# As distâncias são dadas em unidades astronômicas e o tempo em dias.
+
+# Distância do Sol a Terra (UA). 
 r = 1.0 
+# Ângulo de abertura (relacionado a Segunda lei de Kepler) (rad). 
 theta = - pi/2
-v = 0.008
+# Velocidade de translação (rad*UA/dias).
+v = 0.0
+# Velocidade angular (rad/dias).
 omega = 2*pi/365.25
 
-# O momento angular é uma constante de movimento
+# Variando valores de v, podemos distinguir todos os corpos celestes, podendo colocar m = 1.
+
+# O momento angular é uma constante de movimento.
 L = omega*r*r
 
-# Podemos calcular também a energia mecânica total
-# Se E > 0, então a orbita será aberta
-# Se E < 0, a orbita será fechada
+# Podemos calcular também a energia mecânica total.
+# Se E > 0, então a orbita será aberta;
+# Se E < 0, a orbita será fechada.
 Energia = 0.5*(v**2 + (L/r)**2) - GM/r
 
 # Para os gráficos em coordenadas cartesianas (x,y),
@@ -38,15 +51,69 @@ theta_inicial = theta
 theta_final = theta_inicial + 2*pi
 
 # Por enquanto, o cálculo é para órbitas fechadas.
-if (Energia< 0):
-    while(theta <theta_final):
+if (Energia < 0):
+    while(theta < theta_final):
+        # Aceleração total.
+        a = (L**2)/(r**3) - GM/(r**2)
+        v += a*dt
+        r += v*dt
+        omega = L/r**2
+        theta += omega*dt
+        # Transformamos (r, theta) para (x,y), onde a função append faz tal transformação
+        # e preenchemos as listas x e y.
+        x.append(r*cos(theta))
+        y.append(r*sin(theta))
+
+plot(x,y, label = "Energia A")
+
+'''
+# Calculo analítico, para comparação. 
+x = []
+y = []
+theta = 0
+# A = (L*/m*k)**2.
+A = 1.0
+# Excentricidade da órbita (Para órbitas elípticas, 0 < epsilon < 1).
+epsilon = 0.01
+
+print("epsilon: ", epsilon)
+
+if (Energia < 0):
+    while (theta < 2*pi):
+        # Equação da trajetória.
+        r = A/(1 + epsilon*cos(theta))
+        theta += 0.01
+        x.append(r*cos(theta))
+        y.append(r*sin(theta))
+
+plot(x,y, label = "Cálculo Analítico")
+'''
+
+##################################################################################################################
+#################### PODEMOS REPETIR OS CÁLCULOS ACIMA, PORÉM COM OUTROS PARÂMETROS INICIAIS  ####################
+##################################################################################################################
+
+# Condições iniciais (distâncias em UA e tempo em dias).
+#  m = 1.
+r = 1.0
+theta = - pi/2
+v = 0.009
+omega = 2*pi/365.25
+L = omega*r*r
+Energia = 0.5*(v**2 + (L/r)**2) - GM/r
+x = []
+y = []
+dt = 0.01
+theta_inicial = theta
+theta_final = theta_inicial + 2*pi
+
+if (Energia < 0):
+    while(theta < theta_final):
         a = (L**2)/(r**3) - GM/(r**2)
         v = v + a*dt
         r = r + v*dt
         omega = L/r**2
         theta = theta + omega*dt
-        # Transformamos (r, theta) para (x,y)
-        # e preenchemos as listas x e y.
         x.append(r*cos(theta))
         y.append(r*sin(theta))
 
@@ -59,69 +126,10 @@ xlim(lim_min, lim_max)
 xlabel("x (UA)")
 ylabel("y (UA)")
 plot(x,y, label = "Energia B")
-
-# Calculo analítico
-x = []
-y = []
-theta = 0
-A = 1.0
-epsilon = 0.01
-
-print("epsilon: ", epsilon)
-
-if (Energia< 0):
-    while (theta < 2*pi):
-        r = A/(1 + epsilon*cos(theta))
-        theta += 0.01
-        x.append(r*cos(theta))
-        y.append(r*sin(theta))
-
-plot(x,y)
-
-# Podemos repetir os cálculos acima, porém com outros parâmetros iniciais
-
-# Condições iniciais (distâncias em UA e tempo em dias)
-# Para preservar Veff, muda-se somente a velocidade radial inicial.
-r = 1.0
-theta = - pi/2
-v = 0.0
-omega = 2*pi/365.25
-
-# Devemos cálcular L novamente se Veff for modificado. 
-L = omega*r*r
-
-# Calculamos a energia mecânica novamente.
-Energia = 0.5*(v**2 + (L/r)**2) - GM/r
-
-# Preparamos as listas inicialmente vazias para as coordenadas x e y. 
-x = []
-y = []
-
-# Passo de integração 
-dt = 0.01
-
-# E repetimos o cálculo percorrendo a trajetória fechada
-theta_inicial = theta
-theta_final = theta_inicial + 2*pi
-# Precisamos verificar se a órbita é fechada antes do loop. 
-if (Energia< 0):
-    while(theta <theta_final):
-        a = (L**2)/(r**3) - GM/(r**2)
-        v = v + a*dt
-        r = r + v*dt
-        omega = L/r**2
-        theta = theta + omega*dt
-        # A seguir, transfomamos os dados em coordenas cartesianas
-        # e acrescentamos as novas posições em x e e y.
-        x.append(r*cos(theta))
-        y.append(r*sin(theta))
-
-
-plot(x,y, label = "Energia A")
-
-# Colocamos o Sol no posição x = 0 e y = 0.
+# Colocamos o Sol no posição x = 0, y = 0, s = tamanho do ponto, c = cor e alpha = 0 -- transparente, 1 -- opaco.
 scatter(0,0, s = 200, c = 'yellow', alpha = 0.8)
-
+# Escrevemos a legenda dos gráficos na figura em uma posição determinada (loc = 2).
 legend(loc = 2)
+# Cria uma grade linhas horizontais e verticais na figura (grid()).
 grid()
 show()
