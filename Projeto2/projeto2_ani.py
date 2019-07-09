@@ -1,10 +1,9 @@
-from visual.graph import *
-from visual import *
+from vpython import *
 
 # Para converter os dados de coordenadas polares para cartesianas
 from math import sqrt, cos, sin, pi
 
-# Vamos precisar da constante universal de gravitacao
+# Vamos precisar da constante universal de gravitacao.
 # Vamos usar a constante gravitacional heliocentrica.
 GM =  0.000295912036265
 
@@ -39,12 +38,12 @@ scene.x = 20
 f1 = gcurve(color = color.cyan)
 f2 = gcurve(color = color.red)
 f3 = gcurve(color = color.orange)
-myWindow1 = gdisplay(xtitle = "tempo (dias)", ytitle = "Energia")
+myWindow1 = graph(xtitle = "tempo (dias)", ytitle = "Energia")
 
 scene.title = "Orbitas de planetas"
 # Colocamos o Sol no posicao x =0,  y =0, e z = 0.
-Sun = sphere(pos=(0,0,0), color = color.yellow, radius = 0.3, material = materials.emissive)
-Earth = sphere(pos=(r*cos(theta), r*sin(theta), 0), color = color.black, radius = 0.1, make_trail = True)
+Sun = sphere(pos=vector(0,0,0), color = color.yellow, radius = 0.3, texture = None)
+Earth = sphere(pos=vector(r*cos(theta), r*sin(theta), 0), color = color.black, radius = 0.1, make_trail = True)
 
 # Definimos o passo de integracao.
 dt = 0.01
@@ -69,10 +68,10 @@ Earth.color = color.blue
 Earth.trail = curve(color = color.green)
 
 # O fator 0.6 que multiplica o tamanho do vetor eh arbitrario
-Force = arrow(pos = Earth.pos, axis = (-0.6*Earth.pos/(r*r)), color = color.red)
+Force = arrow(pos = vector(Earth.pos), axis = vector(-0.6*Earth.pos/(r*r)), color = color.red)
 vx = v*cos(theta)-omega*r*sin(theta)
 vy = v*sin(theta) +  omega*r*cos(theta)
-Velocidade = arrow(pos = Earth.pos, axis = (50*vx,50*vy,0), color = color.white)
+Velocidade = arrow(pos = vector(Earth.pos), axis = vector(50*vx,50*vy,0), color = color.white)
 t = 0
 
 while 1:
@@ -86,18 +85,21 @@ while 1:
     Earth.pos.x = r*cos(theta)
     Earth.pos.y = r*sin(theta)
     # O planeta deixa um rastro na animacao
-    Earth.trail.append(pos=Earth.pos)
+    Earth.trail.append(pos=vector(Earth.pos))
     # A seguir as coordenadas do vetor Force
-    Force.pos = Earth.pos
+    Force.pos = vector(Earth.pos)
     vx = v*cos(theta) - omega*r*sin(theta)
     vy = v*sin(theta) +  omega*r*cos(theta)
-    Velocidade.pos = Earth.pos
-    Velocidade.axis = (50*vx,50*vy,0)
-    Force.axis = - 0.6*Earth.pos/(r*r)
+    Velocidade.pos = vector(Earth.pos)
+    Velocidade.axis = vector(50*vx,50*vy,0)
+    Force.axis = vector(-0.6*Earth.pos/(r*r))
     #A seguir os graficos de energia sao atualizados
     t += dt
     K = 0.5*(v*v + r*r*omega*omega)
     U = Energia - K
-    f1.plot(pos = (t, K), label = "Cinetica")
-    f2.plot(pos = (t, U), label = "Potencial")
-    f3.plot(pos = (t, Energia), label = "Total")
+    
+f1.plot(pos = vector(t, K, 0), label = "Cinetica")
+f2.plot(pos = vector(t, U, 0), label = "Potencial")
+f3.plot(pos = vector(t, Energia, 0), label = "Total")
+
+
