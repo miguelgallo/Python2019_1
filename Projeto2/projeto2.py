@@ -10,7 +10,7 @@ from math import cos, sin, pi
 
 # Estamos usando o sistema CGS de unidades.
 
-# Vamos precisar da constante universal de gravitação.
+# Vamos precisar da constante gravitacional gaussiana.
 k = 0.01720209395
 # Vamos usar a constante gravitacional heliocêntrica.
 GM = k**2
@@ -20,20 +20,22 @@ GM = k**2
 
 # Distância do Sol a Terra (UA). 
 r = 1.0 
-# Ângulo de abertura (relacionado a Segunda lei de Kepler) (rad). 
+# Ângulo provindo da mudança de coordenadas: cartesianas para polares (rad). 
 theta = - pi/2
 # Velocidade de translação (rad*UA/dias).
 v = 0.0
 # Velocidade angular (rad/dias).
 omega = 2*pi/365.25
 
-# Variando valores de v, podemos distinguir todos os corpos celestes, podendo colocar m = 1.
+# Variando apenas os valores de v, a energia mecânica do sistema mudará.
+# Sendo assim, podemos verificar como tal mudança afeta na trajetória do planeta.
+# Com isso, a massa dele torna-se "irrelevante" podendo ser igual a 1 sem perda de generalidade física.
 
 # O momento angular é uma constante de movimento.
-L = omega*r*r
+L = omega*r**2
 
-# Podemos calcular também a energia mecânica total.
-# Se E > 0, então a orbita será aberta;
+# Energia mecânica do sistema:
+# Se E > 0, então a órbita será aberta;
 # Se E < 0, a orbita será fechada.
 Energia = 0.5*(v**2 + (L/r)**2) - GM/r
 
@@ -71,7 +73,7 @@ plot(x,y, label = "Energia A")
 x = []
 y = []
 theta = 0
-# A = (L*/m*k)**2.
+# A = (L/m*k)**2.
 A = 1.0
 # Excentricidade da órbita (Para órbitas elípticas, 0 < epsilon < 1).
 epsilon = 0.01
@@ -94,12 +96,12 @@ plot(x,y, label = "Cálculo Analítico")
 ##################################################################################################################
 
 # Condições iniciais (distâncias em UA e tempo em dias).
-#  m = 1.
+# m = 1.
 r = 1.0
 theta = - pi/2
 v = 0.009
 omega = 2*pi/365.25
-L = omega*r*r
+L = omega*r**2
 Energia = 0.5*(v**2 + (L/r)**2) - GM/r
 x = []
 y = []
@@ -110,8 +112,8 @@ theta_final = theta_inicial + 2*pi
 if (Energia < 0):
     while(theta < theta_final):
         a = (L**2)/(r**3) - GM/(r**2)
-        v = v + a*dt
-        r = r + v*dt
+        v += a*dt
+        r += v*dt
         omega = L/r**2
         theta = theta + omega*dt
         x.append(r*cos(theta))
